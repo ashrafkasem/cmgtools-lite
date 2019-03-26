@@ -15,9 +15,10 @@ from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 run80X = getHeppyOption("run80X",False)
 
 runData = getHeppyOption("runData",False)
-runMC = getHeppyOption("runMC",False)
+runMC = getHeppyOption("runMC",True)
 runSig = getHeppyOption("runSig",False)
 
+runFastsim = getHeppyOption("runFastS",False)
 
 
 removeJetReCalibration = getHeppyOption("removeJetReCalibration",False)
@@ -30,7 +31,7 @@ selectedEvents=getHeppyOption("selectEvents","")
 keepGenPart=getHeppyOption("keepGenPart",False)
 
 sample = "main"
-test = 1
+test = 0
 multib = True
 zerob = False
 
@@ -194,33 +195,24 @@ anyLepSkim = cfg.Analyzer(
 from CMGTools.TTHAnalysis.analyzers.ttHSTSkimmer import ttHSTSkimmer
 ttHSTSkimmer = cfg.Analyzer(
   ttHSTSkimmer, name='ttHSTSkimmer',
-  minST = 0,
+  minST = 150,
   )
 
 from CMGTools.TTHAnalysis.analyzers.nIsrAnalyzer import NIsrAnalyzer
 NIsrAnalyzer = cfg.Analyzer(
   NIsrAnalyzer, name='NIsrAnalyzer')
   
-if run80X : DataEra = '2016BtoH'
-else : DataEra = '2017BtoF'
+if run80X : DataEra_ = '2016BtoH'
+else : DataEra_ = '2017BtoF'
 
-from CMGTools.TTHAnalysis.analyzers.PrefiringAnalyzer import PrefiringAnalyzer
-PrefiringAnalyzer = cfg.Analyzer(
-  PrefiringAnalyzer, name='PrefiringAnalyzer',
-  #class_object= PrefiringAnalyzer,
-  L1Maps = '$CMSSW_BASE/src/CMGTools/RootTools/data/L1PrefiringMaps_new.root',
-  DataEra = DataEra,
-  UseJetEMPt = False ,
-  PrefiringRateSystematicUncty =  0.2 , 
-  SkipWarnings= True,
-  )
+PrefiringAnalyzer.DataEra = DataEra_
   
 
 ## HT skim
 from CMGTools.TTHAnalysis.analyzers.ttHHTSkimmer import ttHHTSkimmer
 ttHHTSkimmer = cfg.Analyzer(
   ttHHTSkimmer, name='ttHHTSkimmer',
-  minHT = 0,
+  minHT = 350,
   )
 
 
@@ -386,29 +378,38 @@ sequence = cfg.Sequence(susyCoreSequence+[
     ttHEventAna,
     ttHHTSkimmer,
     ttHSTSkimmer,
-    PrefiringAnalyzer,
     treeProducer
     ])
 
 if runMC:
-
+     
+      
   print 'Going to process MC'
   print 'If It fails due to susy masses please comment out necessary lines in TTHAnalysis/python/analyzers/treeProducerSusyCore.py for now'
 
-  # apply a loose lepton skim to MC
-  anyLepSkim.minLeptons = 1
 
-  if run80X:
-         from CMGTools.RootTools.samples.samples_13TeV_RunIISummer16MiniAODv3_1l import *
-  else: 
-         from CMGTools.RootTools.samples.samples_13TeV_RunIIFall17MiniAOD_1l import *
-
-  #pick the file you want to run on
-  selectedComponents = [WJetsToLNuHT]
+    
+  if runFastsim : 
+      from CMGTools.RootTools.samples.samples_94X_FasSimTTJets import *
+      selectedComponents = mcSamplesTTTJets
+      jetAna.mcGT = "Fall17_FastsimV1"
+      sequence.remove(triggerFlagsAna)
+      
+  else : 
+      if run80X:
+          from CMGTools.RootTools.samples.samples_13TeV_RunIISummer16MiniAODv3_1l import *
+      else: 
+          from CMGTools.RootTools.samples.samples_13TeV_RunIIFall17MiniAOD_1l import *
+      
+      # apply a loose lepton skim to MC
+      anyLepSkim.minLeptons = 1
+      #pick the file you want to run on
+      selectedComponents = TTJets_LO_HT800to1200
+      
 #  [TTJets_SingleLeptonFromTbar,TTJets_SingleLeptonFromTbar_ext,TTJets_SingleLeptonFromT,TTJets_DiLepton,TTJets_DiLepton_ext,
   if test==1:
     # test a single component, using a single thread.
-    comp = WJetsToLNuHT[5]
+    comp = selectedComponents[0]
     comp.files = comp.files[:1]
     selectedComponents = [comp]
     comp.splitFactor = 1
@@ -424,11 +425,11 @@ if runMC:
       comp.fineSplitFactor = 1
       comp.splitFactor = len(comp.files)
   elif test==0:
-    selectedComponents = mcSamples
+    selectedComponents = [TTJets_LO_HT800to1200]
     #selectedComponents = [WJetsToLNuHT[1]]
     #selectedComponents = mcSamples
     for comp in selectedComponents:
-      comp.fineSplitFactor = 2
+      comp.fineSplitFactor = 1
       comp.splitFactor = len(comp.files)
   susyCoreSequence.remove(susyScanAna)
   treeProducer.globalVariables+=[
@@ -461,8 +462,10 @@ elif runSig:
   if multib: 
       if run80X : 
           selectedComponents = [SMS_T1tttt_TuneCUETP8M1]
+          jetAna.mcGT = "Spring16_FastSimV1_MC"
       else : 
-          selectedComponents = mcSamplesTTTJets
+          selectedComponents = [SMS_T1tttt_TuneCP2]
+          jetAna.mcGT = "Fall17_FastsimV1"
   
   if zerob: selectedComponents = [SMS_T5qqqqVV_TuneCUETP8M1]
   if multib and zerob : print "Warning ! Both zero b and multi b is set to  True, you will be running Zero b signals ;) Cheers from Ece"
@@ -490,7 +493,7 @@ elif runSig:
     # PRODUCTION
     # run on everything
     for comp in selectedComponents:
-      comp.fineSplitFactor = 3
+      comp.fineSplitFactor = 1
       comp.splitFactor = len(comp.files)
 
   susyCoreSequence.insert(susyCoreSequence.index(susyScanAna)+1,
@@ -559,7 +562,7 @@ if runData : # For running on data
     # PRODUCTION
     # run on everything
     for comp in selectedComponents:
-      comp.fineSplitFactor = 2
+      comp.fineSplitFactor = 1
       comp.splitFactor = len(comp.files)
   sequence.remove(anyLepSkim)
   sequence.remove(NIsrAnalyzer)
@@ -616,7 +619,7 @@ elif runData and not run80X :
 else : 
     fname1="$CMSSW_BASE/src/NNKit/FatJetNN/test/FatJetNN_94X.py"
     
-preprocessor1 = CmsswPreprocessor(fname1)
+preprocessor = CmsswPreprocessor(fname1)
 
 ttHFatJetAna.jetCol="deepntuplizer"
 #jetAna.jetCol = 'selectedUpdatedPatJets'
@@ -644,5 +647,5 @@ if getHeppyOption("nofetch") or getHeppyOption("isCrab"):
 config = cfg.Config( components = selectedComponents,
                      sequence = sequence,
                      services = outputService, 
-                     preprocessor = preprocessor1, 
+                     preprocessor = preprocessor, 
                      events_class = event_class)
