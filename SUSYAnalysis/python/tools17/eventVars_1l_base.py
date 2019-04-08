@@ -307,6 +307,8 @@ class EventVars1L_base:
             "nGenJets","nGenbJets","nGenJets30","nGenbJets30",
 ###################################################for Prefire study ##############################################
             "prefireW","prefireWup","prefireWdwn",
+################################################### to get all the variables in the FR rather than trees ##############################################
+            "met_caloPt","lheHTIncoming","genTau_grandmotherId","genTau_motherId","genLep_grandmotherId","genLep_motherId",
             ]
 
     def listBranches(self):
@@ -381,7 +383,17 @@ class EventVars1L_base:
                 if Gj.pt > 30  : genJets30.append(Gj)
                 if  Gj.pdgId == 5 : genbJets.append(Gj)
                 if  Gj.pdgId == 5 and Gj.pt > 30 : genbJets30.append(Gj)
-                
+            
+            if hasattr(event,'met_caloPt')           : ret["met_caloPt"]           = event.met_caloPt
+            if hasattr(event,'lheHTIncoming')        : ret["lheHTIncoming"]        = event.lheHTIncoming
+            genpTaus = [l for l in Collection(event,"genTau")]
+            genpLeps = [l for l in Collection(event,"genLep")]
+            for gtau in genpTaus : 
+                ret["genTau_grandmotherId"] = gtau.grandmotherId
+                ret["genTau_motherId"]      = gtau.motherId
+            for glep in genpLeps : 
+                ret["genLep_grandmotherId"] = glep.grandmotherId 
+                ret["genLep_motherId"]      = glep.motherId
         ret["nGenJets"] = len(genJets)
         ret["nGenbJets"] = len(genbJets)
         ret["nGenJets30"] = len(genJets30)

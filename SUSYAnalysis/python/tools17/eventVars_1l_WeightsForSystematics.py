@@ -147,7 +147,7 @@ class EventVars1LWeightsForSystematics:
             "DilepNJetWeightConstUp", "DilepNJetWeightSlopeUp", "DilepNJetWeightConstDn", "DilepNJetWeightSlopeDn",
             # W polarisation
             "WpolWup","WpolWdown",
-            'nISRtt','nISRttweight','nISRttweightsyst_up', 'nISRttweightsyst_down',
+            'nISRtt','nISRttweight','nISRttweightsyst_up', 'nISRttweightsyst_down','nISRttweight2'
             # PDF related -- Work In Progress
             #"pdfW","pdfW_Up","pdfW_Down",
             # Scale uncertainty
@@ -329,6 +329,7 @@ class EventVars1LWeightsForSystematics:
         # of Ana and Manuels nISR jet reweighting, very similar to eventVars_1l_signal.py
         # print self.sample
         nISRweight = 1
+        nISRweight2 = 1
         nISRweightsyst_up =  1
         nISRweightsyst_down = 1
         if 'TTJets' in self.sample:
@@ -339,9 +340,9 @@ class EventVars1LWeightsForSystematics:
                 nISRforWeights = 6
 
             ret['nISR'] = int(nISR)
-            ISRweights = { 0: 1, 1 : 0.920, 2 : 0.821, 3 : 0.715, 4 : 0.662, 5 : 0.561, 6 : 0.511}
+            ISRweights =  { 0: 1, 1 : 0.920, 2 : 0.821, 3 : 0.715, 4 : 0.662, 5 : 0.561, 6 : 0.511}
             ISRweightssyst = { 0: 0.0, 1 : 0.040, 2 : 0.090, 3 : 0.143, 4 : 0.169, 5 : 0.219, 6 : 0.244}
-
+            ISRweights2 = { 0: 1, 1 : 0.914, 2 : 0.796, 3 : 0.698, 4 : 0.602, 5 : 0.579, 6 : 0.570}
 
             # ------ Forwarded Message --------
             # Subject: Re: question for ttbar ISR reweighting
@@ -352,13 +353,16 @@ class EventVars1LWeightsForSystematics:
             #[1.096, 1.046, 1.151]: TTJets_SingleLeptFromT
             #[1.116, 1.055, 1.185]: TTJets_DiLept
             C_ISR = 1.090
+            C_ISR2 = 1.080
             C_ISR_up   = 1.043
             C_ISR_down = 1.141
-            nISRweight = C_ISR * ISRweights[nISRforWeights]
+            nISRweight  = C_ISR  * ISRweights[nISRforWeights]
+            nISRweight2 = C_ISR2 * ISRweights2[nISRforWeights]
             nISRweightsyst_up   =  C_ISR_up   * (ISRweights[nISRforWeights] + ISRweightssyst[nISRforWeights])
             nISRweightsyst_down =  C_ISR_down * (ISRweights[nISRforWeights] - ISRweightssyst[nISRforWeights])
 
         ret['nISRttweight'] = nISRweight
+        ret['nISRttweight2'] = nISRweight2
         ret['nISRttweightsyst_up'] = nISRweightsyst_up
         ret['nISRttweightsyst_down'] = nISRweightsyst_down
 

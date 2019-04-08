@@ -49,7 +49,8 @@ if __name__ == '__main__':
 	pattern = os.listdir(indire)
 	for pat in pattern :
 		#if not ('SingleElectron' in pat or 'MET_' in pat  or 'SingleMuon' in pat): continue
-		#if not 'SMS_T1tttt' in pat : continue
+		if not ('MET_Run2017C' in pat or 'SingleMuon_Run2017E' in pat):
+		   continue
 		print pat
 		patout = outdire+'/'+pat
 		os.makedirs(str(patout))

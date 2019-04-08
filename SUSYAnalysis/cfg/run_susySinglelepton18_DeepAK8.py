@@ -15,8 +15,8 @@ from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 run80X = getHeppyOption("run80X",False)
 
 runData = getHeppyOption("runData",False)
-runMC = getHeppyOption("runMC",True)
-runSig = getHeppyOption("runSig",False)
+runMC = getHeppyOption("runMC",False)
+runSig = getHeppyOption("runSig",True)
 
 runFastsim = getHeppyOption("runFastS",False)
 
@@ -464,7 +464,7 @@ elif runSig:
           selectedComponents = [SMS_T1tttt_TuneCUETP8M1]
           jetAna.mcGT = "Spring16_FastSimV1_MC"
       else : 
-          selectedComponents = [SMS_T1tttt_TuneCP2]
+          selectedComponents = [SMS_T1ttttCP5_MVA]
           jetAna.mcGT = "Fall17_FastsimV1"
   
   if zerob: selectedComponents = [SMS_T5qqqqVV_TuneCUETP8M1]
@@ -473,7 +473,7 @@ elif runSig:
 
   if test==1:
     # test a single component, using a single thread.
-    if multib: comp  = SMS_T1tttt_TuneCUETP8M1
+    if multib: comp  = SMS_T1ttttCP5_MVA
     if zerob: comp  = SMS_T5qqqqVV_TuneCUETP8M1
     comp.files = comp.files[:2]
     selectedComponents = [comp]

@@ -37,7 +37,7 @@ def dumpCounts(fname,cname = "counts.txt"):
         for ybin in range(1,hCountSMS.GetNbinsY()+1):
 
             cnt = hCountSMS.GetBinContent(xbin,ybin)
-            if cnt < 1: continue
+            if cnt == 0: continue
 
 
 

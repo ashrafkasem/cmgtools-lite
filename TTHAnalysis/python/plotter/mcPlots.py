@@ -1124,7 +1124,7 @@ class PlotMaker:
                             savErrorLevel = ROOT.gErrorIgnoreLevel; ROOT.gErrorIgnoreLevel = ROOT.kWarning;
                             if "TH2" in total.ClassName() or "TProfile2D" in total.ClassName():
                                 pmap["total"] = total
-                                for p in mca.listSignals(allProcs=True) + mca.listBackgrounds(allProcs=True) + ["signal", "background", "data", "total"]:
+                                for p in mca.listSignals(allProcs=True) + mca.listBackgrounds(allProcs=True) :#+ ["signal", "background", "data", "total"]:
                                     if p not in pmap: continue
                                     plot = pmap[p]
                                     if "TGraph" in plot.ClassName(): continue

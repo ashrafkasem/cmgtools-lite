@@ -10,7 +10,10 @@ for f in rootlist :
 	TF = 'TFile *input_'+sF+";"
 	op = "input_"+sF+"=TFile::Open("+sF+");"
 	TT = "TTree *tree_"+sF+"=(TTree*)input_"+sF+"->Get(\"sf/t\");"
-	DL = "dataloader->AddBackgroundTree(tree_"+sF+"		,	1);"
+	if 'T1tttt' in sF : 
+		DL = "dataloader->AddSignalTree(tree_"+sF+"		,	1);"
+	else : 
+		DL = "dataloader->AddBackgroundTree(tree_"+sF+"		,	1);"
 	print Stri
 	print TF
 	print op

@@ -13,9 +13,9 @@ xsecFile = "../python/tools/glu_xsecs_13TeV.txt"
 
 cntsSusy = {} # dict for signal counts
 C_ISRweightsSusy = {}
-cntFile = "../python/tools17/scans/counts.txt"
+cntFile = "../python/tools17/t1ttt_scan_counts.txt"
 #cntFile = "../python/tools17/scans/counts_T1tttt_2016.txt"
-ISRweightFile = "../python/tools/scans/ISRnormWeights_T1tttt2016.txt"
+ISRweightFile = "../python/tools/scans/ISRnormWeightsT1tttt.txt"
 
 def loadSUSYparams():
 
@@ -136,7 +136,7 @@ class EventVars1L_signal:
                 print 'Xsec not found for mGo', mGo
 
             # Number of generated events
-            '''#ret['totalNgen'] = cntTotal
+            #ret['totalNgen'] = cntTotal
             nISR = 0
             if hasattr(event,'nIsr'): nISR = event.nIsr
             nISRforWeights = int(nISR)
@@ -152,7 +152,7 @@ class EventVars1L_signal:
             ISRweights = { 0: 1, 1 : 0.920, 2 : 0.821, 3 : 0.715, 4 : 0.662, 5 : 0.561, 6 : 0.511}
             ISRweightssyst = { 0: 0.0, 1 : 0.040, 2 : 0.090, 3 : 0.143, 4 : 0.169, 5 : 0.219, 6 : 0.244}
             
-            C_ISR = float(C_ISRweightsSusy[(mGo,mLSP)][0])
+            C_ISR =  float(C_ISRweightsSusy[(mGo,mLSP)][0])
             C_ISR_up = float(C_ISRweightsSusy[(mGo,mLSP)][1])
             C_ISR_down = float(C_ISRweightsSusy[(mGo,mLSP)][2])
 
@@ -166,7 +166,7 @@ class EventVars1L_signal:
             ret['nISRweightsyst_up'] = nISRweightsyst_up 
             ret['nISRweightsyst_down'] = nISRweightsyst_down
             #print nISR, nISRweight, nISRweightsyst_up, nISRweightsyst_down
-            ###Get ISR stuff'''
+            ###Get ISR stuff
 
             ##############
             if (mGo,mLSP) in cntsSusy:

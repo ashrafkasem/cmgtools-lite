@@ -6,8 +6,8 @@ from ROOT import *
 
 def dumpCounts(tree,cname = "counts.txt"):
 
-    hCounts = TH2F("hCounts","Mass scan",1000,1,2001,1000,-1,2001)
-    hWeights = TH2F("hWeights","Mass scan",1000,1,2001,1000,-1,2001)
+    hCounts = TH2F("hCounts","Mass scan",1000,1,2001,1400,-1,2801)
+    hWeights = TH2F("hWeights","Mass scan",1000,1,2001,1400,-1,2801)
 
     #var = "mLSP:mGo" # for friend tree
     var = "GenSusyMNeutralino:GenSusyMGluino" # for cmg tuple
@@ -16,6 +16,7 @@ def dumpCounts(tree,cname = "counts.txt"):
     tree.Draw(var + '>>' + hWeights.GetName(),"genWeight","goff")
 
     totalEvts = hCounts.GetEntries()
+    totalGenW = hWeights.GetEntries()
 
     #print hCounts, hWeights
 
@@ -43,14 +44,14 @@ def dumpCounts(tree,cname = "counts.txt"):
             mGo = int(base * round(mGo/base))
             mLSP = int(base * round(mLSP/base))
 
-            #print "Found %i entries for mass point %i,%i" %(cnt, mGo,mLSP)
+            print "Found %i entries for mass point %i,%i" %(cnt, mGo,mLSP)
             cntDict[(mGo,mLSP)] = (cnt,wgt)
 
     # write file
     with open(cname,"a") as cfile:
 
         #cfile.write("Total\t" + str(totalEvts) + "\n")
-        cfile.write("#mGo\tmLSP\tTotal\tCounts\tgenWeight\n")
+        cfile.write("#mGo\tmLSP\tTotal\tTotGenW\tCounts\tgenWeight\n")
 
         for point in cntDict:
 
@@ -58,7 +59,7 @@ def dumpCounts(tree,cname = "counts.txt"):
             #line = "%i\t%i\t%i\n" %(point[0],point[1],cntDict[point])
 
             # write count, weight and total for each point
-            line = "%i\t%i\t%i\t%i\t%.3f\n" %(point[0],point[1],totalEvts,cntDict[point][0],cntDict[point][1])
+            line = "%i\t%i\t%i\t%.3f\t%i\t%.3f\n" %(point[0],point[1],totalEvts,totalGenW,cntDict[point][0],cntDict[point][1])
 
             cfile.write(line)
 
