@@ -15,7 +15,7 @@ cntsSusy = {} # dict for signal counts
 C_ISRweightsSusy = {}
 cntFile = "../python/tools17/t1ttt_scan_counts.txt"
 #cntFile = "../python/tools17/scans/counts_T1tttt_2016.txt"
-ISRweightFile = "../python/tools/scans/ISRnormWeightsT1tttt.txt"
+ISRweightFile = "../python/tools17/ISRnormWeightsT1tttt.txt"
 
 def loadSUSYparams():
 
