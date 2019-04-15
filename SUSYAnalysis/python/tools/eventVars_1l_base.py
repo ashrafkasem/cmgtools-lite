@@ -312,7 +312,7 @@ class EventVars1L_base:
 ###################################################for Prefire study ##############################################
             "prefireW","prefireWup","prefireWdwn",
 ################################################### to get all the variables in the FR rather than trees ##############################################
-            "met_caloPt","lheHTIncoming","genTau_grandmotherId","genTau_motherId","genLep_grandmotherId","genLep_motherId",
+            "met_caloPt","lheHTIncoming","genTau_grandmotherId","genTau_motherId","genLep_grandmotherId","genLep_motherId","DiLep_Flag","semiLep_Flag",
             
             ]
 
@@ -372,16 +372,12 @@ class EventVars1L_base:
         if hasattr(event, 'isData'):
             ret['isData'] = event.isData
 
-        '''
-        # make python lists as Collection does not support indexing in slices
-        genleps = [l for l in Collection(event,"genLep","ngenLep")]
-        genparts = [l for l in Collection(event,"GenPart","nGenPart")]
-        '''
+        
         genJets = []
         genbJets = []
         genJets30 = []
         genbJets30 = []
-        # for checking the nGenBjets and nGenJets differences between 16/17 PS tunes 
+        # for checking the nGenBjets and nGenJets differences between 16/17 PS tunes and put every thing to FR rather than trees 
         if not event.isData : 
             genparts = [l for l in Collection(event,"GenPart","nGenPart")]
             for Gj in genparts:
@@ -400,6 +396,31 @@ class EventVars1L_base:
             for glep in genpLeps : 
                 ret["genLep_grandmotherId"] = glep.grandmotherId 
                 ret["genLep_motherId"]      = glep.motherId
+                
+            # add flag to distinguish between semilep/DiLep TTBar
+            if "TTJets_DiLepton" in self.sample :
+                if event.lheHTIncoming <= 600 : 
+                    ret["DiLep_Flag"] = 1
+                else : ret["DiLep_Flag"] = 0
+                
+            if "TTJets_SingleLepton" in self.sample :
+                if event.lheHTIncoming <= 600 : 
+                    ret["semiLep_Flag"] = 1
+                else : ret["semiLep_Flag"] = 0
+                
+            if "TTJets_LO_HT" in self.sample :
+                gtau_sum = sum([(abs(gt.grandmotherId)==6 and abs(gt.motherId)==24) for gt in genpTaus])
+                glep_sum = sum([(abs(gl.grandmotherId)==6 and abs(gl.motherId)==24) for gl in genpLeps])
+                if  ((gtau_sum + glep_sum) == 2) : 
+                    ret["DiLep_Flag"] = 1
+                    ret["semiLep_Flag"] = 0
+                elif  ((gtau_sum + glep_sum)) < 2 : 
+                    ret["semiLep_Flag"] = 1
+                    ret["DiLep_Flag"] = 0
+                else : 
+                    ret["DiLep_Flag"] = 0
+                    ret["semiLep_Flag"] = 0
+                    
         ret["nGenJets"] = len(genJets)
         ret["nGenbJets"] = len(genbJets)
         ret["nGenJets30"] = len(genJets30)

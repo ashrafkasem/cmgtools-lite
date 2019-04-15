@@ -37,6 +37,10 @@ MODULES.append( ('1l_bkgDilep', EventVars1L_bkgDilep()) )
 from CMGTools.SUSYAnalysis.tools17.eventVars_1l_isoMT2 import EventVars1L_isoMT2
 MODULES.append( ('1l_isoMT2', EventVars1L_isoMT2()) )
 
+
+from CMGTools.SUSYAnalysis.tools.Weight_for_Scale_with_Pickle_File import Weight_for_Scale
+MODULES.append( ('Weight_Scale',  Weight_for_Scale()) )
+
 #from CMGTools.SUSYAnalysis.tools.eventVars_1l_genLevel import EventVars1LGenLevel
 #MODULES.append( ('1l_BasicsGen', EventVars1LGenLevel()) )
 
@@ -364,7 +368,7 @@ def _runIt(myargs):
     # Save sample name in module
     for m,v in MODULES:
         v.sample = getSampName(fin,options.tree)
-
+        v.path = args[0]
     if options.modules != []:
         toRun = {}
         for m,v in MODULES:

@@ -20,17 +20,17 @@ def getGenWandLepton(event):
     genLeps = filter(lambda l:abs(l.pdgId) in [11,13,15], genParts)
 
     if len(genLeps) == 0:
-        print "no gen lepton found!"
+        #print "no gen lepton found!"
         return wP4, lepP4
 
     lFromW = filter(lambda w:abs(w.motherId)==24, genLeps)
 
     if len(lFromW) == 0:
-        print "no gen W found!", genLeps
+        #print "no gen W found!", genLeps
         return wP4, lepP4
 
     elif len(lFromW)>1:
-        print 'this should not have happened'
+        #print 'this should not have happened'
         return wP4, lepP4
 
     elif len(lFromW) == 1:
@@ -62,11 +62,11 @@ def getGenTopWLepton(event):
     lFromW = filter(lambda w:abs(w.motherId)==24, genLeps)
 
     if len(lFromW) == 0:
-        print "no gen W found!", genLeps
+        #print "no gen W found!", genLeps
         return topP4, wP4, lepP4
 
     elif len(lFromW) > 2:
-        print "More than 2 W's found!"
+        #print "More than 2 W's found!"
         return topP4, wP4, lepP4
 
     elif len(lFromW) == 1:
@@ -101,7 +101,7 @@ def getGenTopWLepton(event):
                     return topP4, wP4, lepP4
 
         if not match:
-            print 'No match at all!'
+            #print 'No match at all!'
             return topP4, wP4, lepP4
 
     return topP4, wP4, lepP4
